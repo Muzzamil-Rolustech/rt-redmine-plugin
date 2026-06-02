@@ -12,6 +12,13 @@
         "REDMINE_ACTIVITY_ID": "5",
         "REDMINE_BILLABLE_HOURS_FIELD_ID": "1"
       }
+    },
+    "redmine": {
+      "url": "https://westeros.rolustech.com:44333/sse",
+      "headers": {
+        "x-api-key": "rt-mcp-redmine",
+        "x-redmine-api-key": "YOUR_API_KEY"
+      }
     }
   }
 }

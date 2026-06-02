@@ -1,0 +1,26 @@
+{
+  "name": "rt-redmine-plugin",
+  "displayName": "RT Redmine Plugin",
+  "version": "1.0.0",
+  "description": "Redmine MCP + skills bundle for logging time and Redmine operations in Cursor.",
+  "author": {
+    "name": "Muzzamil Khan"
+  },
+  "homepage": "https://github.com/muzzamil-khan/redmine-agent-mcp",
+  "repository": "https://github.com/muzzamil-khan/redmine-agent-mcp",
+  "license": "MIT",
+  "keywords": [
+    "redmine",
+    "mcp",
+    "cursor-plugin",
+    "time-logging"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "redmine",
+    "mcp",
+    "operations"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/"
+}

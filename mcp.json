@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "redmine-agent": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@muzzamil-khan/redmine-agent-mcp"
+      ],
+      "env": {
+        "REDMINE_BASE_URL": "https://redmine.example.com",
+        "REDMINE_API_KEY": "YOUR_API_KEY",
+        "REDMINE_ACTIVITY_ID": "5",
+        "REDMINE_BILLABLE_HOURS_FIELD_ID": "1"
+      }
+    }
+  }
+}

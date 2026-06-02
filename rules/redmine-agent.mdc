@@ -1,0 +1,10 @@
+---
+description: Redmine plugin bootstrap rule
+alwaysApply: true
+---
+
+# Redmine plugin
+
+Load and follow the skill at `skills/redmine-operations/SKILL.md` for Redmine operations.
+
+Keep this rule minimal so behavior stays portable.

@@ -1,7 +1,7 @@
 {
   "name": "rt-redmine-plugin",
   "displayName": "RT Redmine Plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Redmine MCP + skills bundle for logging time and Redmine operations in Cursor.",
   "author": {
     "name": "Muzzamil Khan"

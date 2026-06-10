@@ -5,6 +5,11 @@ alwaysApply: true
 
 # Redmine plugin
 
-Load and follow the skill at `skills/redmine-operations/SKILL.md` for Redmine operations.
+Use Redmine skills for tool-specific behavior:
+- `skills/redmine-operations/SKILL.md`
+- `skills/redmine-ticket-creation/SKILL.md`
+- `skills/redmine-batch-ticket-creation/SKILL.md`
+
+Batch create: `get_sheet_data` → `redmine_agent_sheet_to_csv` → `redmine_agent_get_config` → `redmine_agent_batch_create_issues`. Follow `redmine-batch-ticket-creation` skill: project → target version (always ask) → use `suggestedColumnMapping` → confirm → preview → upload → sheet write-back with Google Sheets MCP. No hooks.
 
 Keep this rule minimal so behavior stays portable.

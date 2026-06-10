@@ -19,6 +19,17 @@
         "x-api-key": "rt-mcp-redmine",
         "x-redmine-api-key": "YOUR_API_KEY"
       }
+    },
+    "google-sheets": {
+      "command": "uvx",
+      "args": [
+        "mcp-google-sheets@latest"
+      ],
+      "env": {
+        "SERVICE_ACCOUNT_PATH": "/path/to/google-service-account.json",
+        "DRIVE_FOLDER_ID": "YOUR_DRIVE_FOLDER_ID"
+      },
+      "disabled": false
     }
   }
 }

@@ -3,31 +3,49 @@
 Cursor plugin bundle for Redmine operations:
 
 - MCP server: `@muzzamil-khan/redmine-agent-mcp`
-- Skill: `redmine-operations`
-- Rule: bootstrap rule to load the skill
+- Google Sheets MCP server for spreadsheet import/write-back
+- Skills: `redmine-operations`, `redmine-ticket-creation`, `redmine-batch-ticket-creation`
+- Rule: bootstrap rule to load the skills
 
 ## What this plugin provides
 
-- One MCP server config for Redmine operations
-- A reusable Redmine skill that can be extended with more skills later
-- A minimal rule that ensures the skill is loaded
+- Redmine MCP config for published `@muzzamil-khan/redmine-agent-mcp`
+- Google Sheets MCP config for reading spreadsheet payloads and writing Redmine links back
+- Reusable skills for Redmine operations, single ticket creation, and batch ticket creation
+- A minimal rule that ensures the Redmine skills are loaded
 
-## MCP server command
+## MCP server commands
 
-The plugin uses this command:
+The Redmine agent uses the published npm package:
 
 ```bash
 npx -y @muzzamil-khan/redmine-agent-mcp
 ```
 
+The Google Sheets MCP uses:
+
+```bash
+uvx mcp-google-sheets@latest
+```
+
 ## Environment variables
 
-Set these in the MCP config:
+Set these in `mcp.json` before using the plugin:
 
 - `REDMINE_BASE_URL`
 - `REDMINE_API_KEY`
 - `REDMINE_ACTIVITY_ID`
 - `REDMINE_BILLABLE_HOURS_FIELD_ID`
+- `SERVICE_ACCOUNT_PATH`
+- `DRIVE_FOLDER_ID`
+
+Keep real API keys and service account paths out of the repository. The checked-in `mcp.json` uses placeholders.
+
+## Included Skills
+
+- `redmine-operations`: Routes Redmine reads, updates, time logging, config lookup, permissions, and assignee lookup.
+- `redmine-ticket-creation`: Creates a single Redmine issue through MCP intake, preview, and explicit confirmation.
+- `redmine-batch-ticket-creation`: Creates Feature → User Stories → Tasks from Google Sheets or CSV with mapping, preview, confirmation, and sheet write-back.
 
 ## Extend with more skills
 
@@ -35,4 +53,4 @@ Add new skills under:
 
 `skills/<new-skill>/SKILL.md`
 
-All skills can share the same `redmine-agent` MCP server from `mcp.json`.
+All Redmine skills can share the same `redmine-agent` MCP server from `mcp.json`. Spreadsheet flows also use the `google-sheets` MCP server.

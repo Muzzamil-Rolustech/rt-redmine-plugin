@@ -8,6 +8,7 @@
 - Updated `redmine-operations` skill for config lookup, assignee lookup, permission checks, issue creation, batch ticket creation, and activity-aware time logging.
 - Updated plugin bootstrap rule to load all Redmine skills and enforce the batch creation flow.
 - Updated plugin metadata and documentation for the published `@muzzamil-khan/redmine-agent-mcp` package.
+- Added standard batch sheet documentation with the template URL and `Ticket` column write-back rules.
 
 ## 1.0.1
 

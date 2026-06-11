@@ -47,6 +47,16 @@ Keep real API keys and service account paths out of the repository. The checked-
 - `redmine-ticket-creation`: Creates a single Redmine issue through MCP intake, preview, and explicit confirmation.
 - `redmine-batch-ticket-creation`: Creates Feature → User Stories → Tasks from Google Sheets or CSV with mapping, preview, confirmation, and sheet write-back.
 
+## Standard Sheet Reference
+
+Use this sheet as a reference for the expected batch ticket format:
+
+https://docs.google.com/spreadsheets/d/1AVS1EmSpwYNhB2eN3f4NoWivQxwkzvj9_MXLwQeWA3g/edit?gid=0#gid=0
+
+Users should provide the actual sheet link when asking the agent to create tickets. This reference URL documents the expected format only.
+
+In batch creation, the `Ticket` column is the Redmine ticket id/write-back column. Leave it blank for new issues; after creation, the agent fills the user-provided sheet with `Ticket:#<taskId>` and/or `MainTicket:#<storyId>` links.
+
 ## Extend with more skills
 
 Add new skills under:

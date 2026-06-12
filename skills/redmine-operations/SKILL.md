@@ -5,7 +5,7 @@ description: Run Redmine operations via MCP (issues, projects, time entries, bat
 
 # Redmine operations
 
-Use **both** MCP servers from `.cursor/mcp.json`:
+Use **both** MCP servers from `mcp.json`:
 
 - **`redmine`**: team Westeros SSE gateway for standard Redmine operations.
 - **`redmine-agent`**: local `npm run mcp` server with `redmine_agent_log_time`, `redmine_agent_create_issue`, `redmine_agent_batch_create_issues`, `redmine_agent_get_all_users`, `redmine_agent_list_permissions`.
@@ -17,7 +17,7 @@ Use **both** MCP servers from `.cursor/mcp.json`:
 | **`redmine-agent`** | `redmine_agent_get_config` | Live trackers, activities, priorities, statuses (refresh with `force: true`) |
 | **`redmine-agent`** | `redmine_agent_list_permissions` | User/role permission checks |
 
-Do **not** route full issue creation here; use `.cursor/skills/redmine-ticket-creation/SKILL.md` and `redmine_agent_create_issue`.
+Do **not** route full issue creation here; use `skills/redmine-ticket-creation/SKILL.md` and `redmine_agent_create_issue`.
 
 ## Tool routing
 
@@ -26,6 +26,7 @@ Do **not** route full issue creation here; use `.cursor/skills/redmine-ticket-cr
 | Log time / batch timelog / multiple issues or dates | **`redmine_agent_log_time`** |
 | Create issue / new task / ticket with full intake | **`redmine_agent_create_issue`** (see ticket-creation skill) |
 | Batch create from spreadsheet / Google Sheet | **`redmine_agent_batch_create_issues`** — **must** follow batch-ticket-creation skill (preview + user confirm; AskQuestion for wrong assignees) |
+| Bulk update task description + status from sheet (match by task title or Ticket:#id) | **`redmine_agent_bulk_update_issues`** — pick_project → map_columns → confirm_mapping → preview_gate → proceed |
 | List assignable users (your project memberships) for assignee matching | **`redmine_agent_get_all_users`** (optional `projectId`) |
 | What permissions do I have / roles / forbidden ops | **`redmine_agent_list_permissions`** |
 | Get my time entries / logs | `get_my_time_entries` (team `redmine`) |

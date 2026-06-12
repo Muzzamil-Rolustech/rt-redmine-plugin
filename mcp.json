@@ -26,8 +26,8 @@
         "mcp-google-sheets@latest"
       ],
       "env": {
-        "SERVICE_ACCOUNT_PATH": "/path/to/google-service-account.json",
-        "DRIVE_FOLDER_ID": "YOUR_DRIVE_FOLDER_ID"
+        "CREDENTIALS_PATH": "/path/to/client-secret.json",
+        "TOKEN_PATH": "token.json"
       },
       "disabled": false
     }

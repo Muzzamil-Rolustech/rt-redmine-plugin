@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Synced skills, bootstrap rule, and `mcp.json` from `redmine-mcp-agent` workspace.
+- Updated `redmine-operations` with bulk update routing (`redmine_agent_bulk_update_issues`).
+- Updated `redmine-batch-ticket-creation` with status column mapping, status aliases, and target-version AskQuestion flow.
+- Aligned Google Sheets MCP env vars with workspace config (`CREDENTIALS_PATH`, `TOKEN_PATH`).
+
 ## 1.1.0
 
 - Added Google Sheets MCP config for spreadsheet import and Redmine link write-back.

@@ -16,12 +16,12 @@ Use this skill for batch / spreadsheet / Google Sheet issue creation.
 | Step | Action |
 |------|--------|
 | **0** | Load sheet → `get_sheet_data` → `redmine_agent_sheet_to_csv` |
-| **1** | **`redmine_agent_get_config`** (`force: true`) — trackers, priorities, aliases for mapping |
+| **1** | **`redmine_agent_get_config`** (`force: true`) — trackers, priorities, statuses, aliases for mapping |
 | **2** | `batch_create_issues` (no `project`) → **`pick_project`** → **AskQuestion** |
 | **3** | Retry with `project` → **`pick_target_version`** → **AskQuestion always** (never infer from missing sheet column) |
 | **4** | Retry with `missingTargetVersionFix` → **`map_columns`** → use **`data.suggestedColumnMapping`** |
 | **5** | **`confirm_mapping`** → AskQuestion proceed / change → `confirmMappingAction: "proceed"` |
-| **6** | **`fix_batch_gaps`** / **`fix_assignees`** if returned — AskQuestion using `priorityOptions` / `trackerOptions` / `assigneeOptions` from MCP |
+| **6** | **`fix_batch_gaps`** / **`fix_assignees`** if returned — AskQuestion using `priorityOptions` / `trackerOptions` / `statusOptions` / `assigneeOptions` from MCP |
 | **7** | **`preview_gate`** → post `previewOverview` + `previewDiagram` + `previewTree` → AskQuestion yes/no |
 | **8** | `previewAction: "proceed"` only after **yes** |
 | **9** | Sheet write-back when `sheetSource` present — **all sub-steps mandatory, none skippable:** **9a** unmerge id column → **9b** Feature title HYPERLINK (when `writeBackHints.featureWriteBack`) → **9c** Ticket / MainTicket HYPERLINKs |
@@ -58,9 +58,31 @@ Use for:
 
 - **Trackers** + `trackerAliases` (Type column, e.g. `bug`→Bug, `cr`→Change Request)
 - **Priorities** + `priorityAliases` (e.g. `medium`→Normal, `highest`→Immediate)
+- **Statuses** + `statusAliases` (Status column — see table below)
 - Preview labels (`id — name`)
 
 Do **not** search the codebase for enum values — config is the source of truth.
+
+### Status aliases (sheet → Redmine)
+
+| Sheet label | Redmine status |
+|-------------|----------------|
+| To Do | New |
+| In Progress | In Progress |
+| Review | Code Review |
+| On Hold | Waiting for Support |
+| Dev Done | Ready For QA |
+| Done | Closed |
+| Feedback | Feedback |
+| Deferred | Deferred |
+| Deployed on Staging | Deployed on Staging |
+| Deployed on PreProd / Deplyed on PreProd | Pre-production |
+| Ready For Pre-Prod / Ready For PreProd | Move to preprod |
+| Verified Pre-Prod / Verified PreProd | Ok for Release |
+
+- Map sheet **Status** column via `suggestedColumnMapping.status` (header `Status`).
+- **Empty** Status on a row → workflow default **New**.
+- Unknown labels (no alias / no exact match) → **`fix_batch_gaps`** AskQuestion → retry with **`statusNameFixes`**.
 
 ---
 
@@ -83,12 +105,25 @@ Never default a project. Never infer from FE/BE/System column.
 
 After `project` is set, call again **without** `missingTargetVersionFix` → `pick_target_version`.
 
-**Always AskQuestion** — even when the sheet has no Target Version column and even when the project has zero versions (then only **Skip target version** is offered).
+**Always AskQuestion** — even when the sheet has no Target Version column and even when the project has zero versions.
+
+### AskQuestion options
+
+MCP lists existing project versions (when any) and **Skip target version**. No separate “Create new version” step — user types the name via **Other**.
 
 | User picks | Retry with |
 |------------|------------|
 | `1314 — Sprint name` | `missingTargetVersionFix`: that exact label |
-| Skip | `missingTargetVersionFix`: `"Skip target version"` |
+| **Other** / typed name in follow-up comment | `missingTargetVersionFix`: `"Create: <name>"` (creates version in Redmine, then continues) |
+| **Skip target version** | `missingTargetVersionFix`: `"Skip target version"` |
+
+When the project has **no** versions, the same AskQuestion still runs — user can **Other** (type a name) or **Skip**.
+
+After creation, MCP resolves to `"id — name"` and continues to `map_columns`. Use that resolved value in later batch calls.
+
+```json
+{ "missingTargetVersionFix": "Create: Sprint 42" }
+```
 
 Sheet **Target Version** column (when mapped) overrides per User Story row. Batch default from this step applies to stories **without** a per-row value.
 
@@ -111,6 +146,7 @@ MCP returns **`data.suggestedColumnMapping`** — use it as `columnMapping`:
     "description": "Description",
     "hours": "Estimate",
     "assignedTo": "Assignee",
+    "status": "Status",
     "ticket": "Ticket"
   }
 }
@@ -150,20 +186,21 @@ Steps to Reproduce is **not** a sheet column — map `comments` / `description` 
 
 ## Step 5 — Fix gaps (config + AskQuestion only)
 
-### Priority / Type mismatch (`fix_batch_gaps`)
+### Priority / Type / Status mismatch (`fix_batch_gaps`)
 
-MCP returns **`questions[]`** with `priorityOptions` / `trackerOptions` from config.
+MCP returns **`questions[]`** with `priorityOptions` / `trackerOptions` / `statusOptions` from config.
 
 **One AskQuestion** for all questions. Retry with:
 
 ```json
 {
   "priorityNameFixes": { "Highest": "1 — Immediate" },
-  "trackerNameFixes": { "CR": "5 — Change Request" }
+  "trackerNameFixes": { "CR": "5 — Change Request" },
+  "statusNameFixes": { "On Hold": "19 — Waiting for Support" }
 }
 ```
 
-Aliases in config (`highest`→Immediate, `medium`→Normal) apply automatically when no fix is needed. For unmapped labels, use **`priorityNameFixes`** / **`trackerNameFixes`** — do not edit CSV by hand unless the user asks.
+Aliases in config apply automatically when no fix is needed (`highest`→Immediate, `on hold`→Waiting for Support, etc.). For unmapped labels, use **`priorityNameFixes`** / **`trackerNameFixes`** / **`statusNameFixes`** — do not edit CSV by hand unless the user asks.
 
 ### Assignees (`fix_assignees`)
 
@@ -195,6 +232,7 @@ Post in order:
   "confirmMappingAction": "proceed",
   "assigneeNameFixes": { ... },
   "priorityNameFixes": { ... },
+  "statusNameFixes": { ... },
   "rowFixes": { "row-8-subtask": { "targetVersion": "1314 — Sprint" } },
   "previewAction": "proceed"
 }
@@ -319,6 +357,7 @@ Use **`batch_update_cells`**. Every cell must start with `=` — the label (`Tic
 | **User Stories** / **Task** column | **User Story** |
 | **Tasks** / **Sub-Tasks** column | **Task** (or Type override) |
 | **Type** | Tracker from config |
+| **Status** | Redmine status from config (default **New** when empty) |
 | **Ticket** / **Task ID** | Existing id → skip create; write-back after upload (Ticket: Task, MainTicket: User Story) |
 
 ---
@@ -328,10 +367,10 @@ Use **`batch_update_cells`**. Every cell must start with `=` — the label (`Tic
 | `data.step` | Agent action |
 |-------------|--------------|
 | `pick_project` | AskQuestion → retry with `project` |
-| `pick_target_version` | **Always** AskQuestion → retry with `missingTargetVersionFix` |
+| `pick_target_version` | **Always** AskQuestion → retry with `missingTargetVersionFix` (select existing / Other → `Create: <name>` / Skip) |
 | `map_columns` | Use `suggestedColumnMapping` → retry with `columnMapping` |
 | `confirm_mapping` | AskQuestion → `confirmMappingAction: "proceed"` |
-| `fix_batch_gaps` | AskQuestion from `questions[]` → `priorityNameFixes` / `trackerNameFixes` |
+| `fix_batch_gaps` | AskQuestion from `questions[]` → `priorityNameFixes` / `trackerNameFixes` / `statusNameFixes` |
 | `fix_assignees` | AskQuestion → `assigneeNameFixes` |
 | `preview_gate` | Preview blocks → AskQuestion yes/no |
 | upload | `previewAction: "proceed"` after yes |
@@ -357,7 +396,7 @@ Use **`batch_update_cells`**. Every cell must start with `=` — the label (`Tic
 |------|-----|
 | `get_sheet_data` | Read spreadsheet |
 | `redmine_agent_sheet_to_csv` | → `csvContent` + `sheetSource` |
-| **`redmine_agent_get_config`** | **Step 1 — trackers, priorities, aliases** |
+| **`redmine_agent_get_config`** | **Step 1 — trackers, priorities, statuses, aliases** |
 | `redmine_agent_batch_create_issues` | Parse, preview, upload |
 | `redmine_agent_get_all_users` | Assignee options (`projectId`) |
 | `get_sheet_data` (`include_grid_data: true`) | Step 9a — `sheetId` + `merges` for id column |

@@ -1,7 +1,7 @@
 {
   "name": "rt-redmine-plugin",
   "displayName": "RT Redmine Plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Redmine MCP + skills bundle for time logging, issue creation, batch ticket creation, and Google Sheets workflows in Cursor.",
   "author": {
     "name": "Muzzamil Khan"

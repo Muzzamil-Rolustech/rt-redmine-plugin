@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Updated `mcp.json` configuration
+    
 ## 1.2.0
 
 - Synced skills, bootstrap rule, and `mcp.json` from `redmine-mcp-agent` workspace.

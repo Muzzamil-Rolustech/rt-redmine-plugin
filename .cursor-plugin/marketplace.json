@@ -1,0 +1,40 @@
+{
+  "name": "rt-redmine-marketplace",
+  "owner": {
+    "name": "Muzzamil Khan"
+  },
+  "metadata": {
+    "description": "RT Redmine plugin for time logging, ticket creation, and Google Sheets workflows in Cursor."
+  },
+  "plugins": [
+    {
+      "name": "rt-redmine-plugin",
+      "source": ".",
+      "displayName": "RT Redmine Plugin",
+      "description": "Redmine MCP + skills bundle for time logging, issue creation, batch ticket creation, and Google Sheets workflows in Cursor.",
+      "version": "1.3.0",
+      "author": {
+        "name": "Muzzamil Khan"
+      },
+      "homepage": "https://github.com/Muzzamil-Rolustech/rt-redmine-plugin",
+      "repository": "https://github.com/Muzzamil-Rolustech/rt-redmine-plugin",
+      "license": "MIT",
+      "keywords": [
+        "redmine",
+        "mcp",
+        "cursor-plugin",
+        "time-logging",
+        "google-sheets",
+        "ticket-creation"
+      ],
+      "category": "developer-tools",
+      "tags": [
+        "redmine",
+        "mcp",
+        "operations",
+        "google-sheets"
+      ],
+      "logo": "assets/logo.svg"
+    }
+  ]
+}

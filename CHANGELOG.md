@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0
+
+- Added `.cursor-plugin/marketplace.json` for Cursor Team Marketplace import (`source: "."`).
+- Added `assets/logo.svg` and referenced it from the plugin + marketplace manifests.
+- Cleaned `.cursor-plugin/plugin.json` for marketplace schema (moved display/category/tags to marketplace entry).
+- Declared plugin `variables` and switched `mcp.json` to `${VAR}` placeholders for dashboard configuration.
+- Fixed homepage/repository URLs to point at `rt-redmine-plugin`.
+
 ## 1.2.1
 
 - Updated `mcp.json` configuration

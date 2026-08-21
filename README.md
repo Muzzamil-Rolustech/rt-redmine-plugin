@@ -107,12 +107,29 @@ Update Cursor before installing the plugin:
 - **Help → Check for Updates** (or download from https://cursor.com)
 - Use **Cursor 2.6+** so plugin MCP servers load correctly
 
-### Project-level install (recommended)
+### Team Marketplace (recommended)
+
+This repo ships `.cursor-plugin/marketplace.json` so an admin can import it as a Team Marketplace:
+
+1. Open **Dashboard → Plugins → Team Marketplaces**.
+2. Click **Add Marketplace** / **Import from Repo**.
+3. Paste `https://github.com/Muzzamil-Rolustech/rt-redmine-plugin`.
+4. Confirm Cursor lists **rt-redmine-plugin**, then save access + install mode.
+5. In Cursor, open **Customize**, find **RT Redmine Plugin**, and install (prefer **project scope**).
+6. Open **Plugins → Configure** and set the required variables (`REDMINE_BASE_URL`, `REDMINE_API_KEY`, SSE URL/key, optional Sheets paths).
+
+Marketplace metadata lives in:
+
+- `.cursor-plugin/marketplace.json` — catalog entry (`source: "."`)
+- `.cursor-plugin/plugin.json` — plugin manifest + `variables` schema
+- `assets/logo.svg` — marketplace logo
+
+### Project-level install
 
 Install at the **project level** when possible. Project-level installs pick up plugin updates more reliably than some account-level installs after plugin changes.
 
-1. Open **Cursor Settings** → **Plugins** (or the marketplace panel).
-2. Install **RT Redmine Plugin** from your team marketplace, or from the repo if your org has imported it.
+1. Open **Customize** (or **Settings → Plugins**).
+2. Install **RT Redmine Plugin** from your team marketplace.
 3. Prefer **project scope** over user scope when prompted.
 
 ### Local development / manual install
@@ -145,12 +162,14 @@ Cursor starts these from `mcp.json`:
 npx -y @muzzamil-khan/redmine-agent-mcp
 ```
 
-Environment variables:
+Plugin variables (set in **Plugins → Configure**; substituted into `mcp.json`):
 
 - `REDMINE_BASE_URL`
 - `REDMINE_API_KEY`
 - `REDMINE_ACTIVITY_ID`
 - `REDMINE_BILLABLE_HOURS_FIELD_ID`
+- `REDMINE_SSE_URL`
+- `REDMINE_SSE_API_KEY`
 
 ### Google Sheets (`uvx`)
 
@@ -160,14 +179,14 @@ uvx mcp-google-sheets@latest
 
 Always use `@latest` so `uvx` fetches the newest `mcp-google-sheets` release.
 
-Environment variables (OAuth flow used by this plugin):
+Plugin variables (OAuth flow used by this plugin):
 
-- `CREDENTIALS_PATH` — absolute path to your Google OAuth client JSON
-- `TOKEN_PATH` — writable path where the OAuth refresh token is cached after first login (any path you choose)
+- `GOOGLE_SHEETS_CREDENTIALS_PATH` — absolute path to your Google OAuth client JSON (`CREDENTIALS_PATH` in the MCP process)
+- `GOOGLE_SHEETS_TOKEN_PATH` — writable path where the OAuth refresh token is cached (`TOKEN_PATH` in the MCP process)
 
 See [docs/redmine-ticket-creation-setup.md](docs/redmine-ticket-creation-setup.md) for Google Cloud setup, Redmine API key, sheet sharing, and first-run OAuth steps.
 
-Keep real API keys and credential paths out of Git. The checked-in `mcp.json` uses placeholders.
+Keep real API keys and credential paths out of Git. The checked-in `mcp.json` uses `${VAR}` placeholders only.
 
 ### Enable MCP servers in Cursor
 

@@ -1,11 +1,18 @@
 # Changelog
 
+## 1.4.0
+
+- Added Claude Code packaging: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.mcp.json`.
+- Declared Claude `userConfig` with the same team defaults as Cursor variables (activity `5`, billable field `1`, SSE URL/key, base URL, Sheets paths).
+- Added `skills/redmine-plugin-bootstrap` so Claude loads the same bootstrap guidance as the Cursor rule.
+
 ## 1.3.0
 
 - Added `.cursor-plugin/marketplace.json` for Cursor Team Marketplace import (`source: "."`).
 - Added `assets/logo.svg` and referenced it from the plugin + marketplace manifests.
 - Cleaned `.cursor-plugin/plugin.json` for marketplace schema (moved display/category/tags to marketplace entry).
 - Declared plugin `variables` and switched `mcp.json` to `${VAR}` placeholders for dashboard configuration.
+- Preserved team defaults on variables (`REDMINE_ACTIVITY_ID=5`, `REDMINE_BILLABLE_HOURS_FIELD_ID=1`, SSE URL/key, base URL, Sheets paths).
 - Fixed homepage/repository URLs to point at `rt-redmine-plugin`.
 
 ## 1.2.1

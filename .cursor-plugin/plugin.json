@@ -1,6 +1,6 @@
 {
   "name": "rt-redmine-plugin",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Redmine MCP + skills bundle for time logging, issue creation, batch ticket creation, and Google Sheets workflows in Cursor.",
   "author": {
     "name": "Muzzamil Khan"
@@ -25,49 +25,53 @@
       "REDMINE_BASE_URL": {
         "type": "string",
         "title": "Redmine base URL",
-        "description": "Base URL of your Redmine instance (e.g. https://redmine.example.com)"
+        "description": "Base URL of your Redmine instance",
+        "default": "https://redmine.rolustech.com"
       },
       "REDMINE_API_KEY": {
         "type": "string",
         "title": "Redmine API key",
-        "description": "Your personal Redmine API access key"
+        "description": "Your personal Redmine API access key (no shared default — set your own)"
       },
       "REDMINE_ACTIVITY_ID": {
         "type": "string",
         "title": "Default activity ID",
-        "description": "Default Redmine time-entry activity ID"
+        "description": "Default Redmine time-entry activity ID",
+        "default": "5"
       },
       "REDMINE_BILLABLE_HOURS_FIELD_ID": {
         "type": "string",
         "title": "Billable hours field ID",
-        "description": "Custom field ID used for billable hours"
-      },
-      "REDMINE_SSE_API_KEY": {
-        "type": "string",
-        "title": "Redmine SSE gateway API key",
-        "description": "x-api-key for the team Redmine SSE MCP gateway"
+        "description": "Custom field ID used for billable hours",
+        "default": "1"
       },
       "REDMINE_SSE_URL": {
         "type": "string",
         "title": "Redmine SSE gateway URL",
-        "description": "SSE endpoint URL for the team Redmine MCP gateway"
+        "description": "SSE endpoint URL for the team Redmine MCP gateway",
+        "default": "https://staging5.rolustech.com:44312/sse"
+      },
+      "REDMINE_SSE_API_KEY": {
+        "type": "string",
+        "title": "Redmine SSE gateway API key",
+        "description": "x-api-key for the team Redmine SSE MCP gateway",
+        "default": "rt-mcp-redmine"
       },
       "GOOGLE_SHEETS_CREDENTIALS_PATH": {
         "type": "string",
         "title": "Google OAuth credentials path",
-        "description": "Absolute path to the Google OAuth client JSON file"
+        "description": "Absolute path to the Google OAuth client JSON file",
+        "default": "/path/to/client-secret.json"
       },
       "GOOGLE_SHEETS_TOKEN_PATH": {
         "type": "string",
         "title": "Google OAuth token path",
-        "description": "Writable path where the OAuth refresh token is cached"
+        "description": "Writable path where the OAuth refresh token is cached",
+        "default": "token.json"
       }
     },
     "required": [
-      "REDMINE_BASE_URL",
-      "REDMINE_API_KEY",
-      "REDMINE_SSE_URL",
-      "REDMINE_SSE_API_KEY"
+      "REDMINE_API_KEY"
     ]
   }
 }

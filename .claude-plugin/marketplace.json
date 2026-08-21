@@ -4,14 +4,14 @@
     "name": "Muzzamil Khan"
   },
   "metadata": {
-    "description": "RT Redmine plugin for time logging, ticket creation, and Google Sheets workflows in Cursor and Claude Code."
+    "description": "RT Redmine plugin for time logging, ticket creation, and Google Sheets workflows in Claude Code."
   },
   "plugins": [
     {
       "name": "rt-redmine-plugin",
-      "source": ".",
+      "source": "./",
       "displayName": "RT Redmine Plugin",
-      "description": "Redmine MCP + skills bundle for time logging, issue creation, batch ticket creation, and Google Sheets workflows in Cursor.",
+      "description": "Redmine MCP + skills bundle for time logging, issue creation, batch ticket creation, and Google Sheets workflows in Claude Code.",
       "version": "1.4.0",
       "author": {
         "name": "Muzzamil Khan"
@@ -22,19 +22,18 @@
       "keywords": [
         "redmine",
         "mcp",
-        "cursor-plugin",
+        "claude-code",
         "time-logging",
         "google-sheets",
         "ticket-creation"
       ],
-      "category": "developer-tools",
+      "category": "productivity",
       "tags": [
         "redmine",
         "mcp",
         "operations",
         "google-sheets"
-      ],
-      "logo": "assets/logo.svg"
+      ]
     }
   ]
 }

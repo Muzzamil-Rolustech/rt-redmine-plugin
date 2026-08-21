@@ -1,30 +1,32 @@
 # RT Redmine Plugin
 
-Cursor plugin bundle for Redmine operations:
+Cursor + Claude Code plugin bundle for Redmine operations:
 
 - MCP server: `@muzzamil-khan/redmine-agent-mcp` (via `npx`)
 - Google Sheets MCP server: `mcp-google-sheets@latest` (via `uvx`)
-- Skills: `redmine-operations`, `redmine-ticket-creation`, `redmine-batch-ticket-creation`
-- Rule: bootstrap rule to load the skills
+- Skills: `redmine-operations`, `redmine-ticket-creation`, `redmine-batch-ticket-creation`, `redmine-plugin-bootstrap`
+- Cursor rule: bootstrap rule to load the skills
+- Claude packaging: `.claude-plugin/` + `.mcp.json` with `userConfig` defaults
 
 ## What this plugin provides
 
 - Redmine MCP config for published `@muzzamil-khan/redmine-agent-mcp`
 - Google Sheets MCP config for reading spreadsheet payloads and writing Redmine links back
 - Reusable skills for Redmine operations, single ticket creation, and batch ticket creation
-- A minimal rule that ensures the Redmine skills are loaded
+- Cursor Team Marketplace + Claude Code marketplace manifests
+- Shared defaults for activity ID (`5`), billable field (`1`), SSE gateway URL/key, and base URL
 
 ## Quick start
 
 1. Install the runtime tools below (`Node.js` + `uv`).
-2. Install or update **Cursor** to the latest version (2.6+ recommended for plugin MCP support).
-3. Install this plugin in Cursor (project-level install is recommended).
-4. Follow the setup guide to configure credentials and MCP env vars:
+2. Install in **Cursor** and/or **Claude Code** (see install sections below).
+3. Configure credentials (Cursor: **Plugins → Configure**; Claude: enable-time `userConfig` prompts).
+4. Follow the setup guide:
    - [Redmine Ticket Creation Setup Guide](docs/redmine-ticket-creation-setup.md)
 
 ## Prerequisites
 
-Both MCP servers run through Cursor. You need these tools on your machine:
+MCP servers run through Cursor or Claude Code. You need these tools on your machine:
 
 | Tool | Used by | Purpose |
 | --- | --- | --- |
@@ -152,9 +154,46 @@ Copy-Item -Recurse -Force "C:\path\to\rt-redmine-plugin\*" "$env:USERPROFILE\.cu
 
 Then run **Developer: Reload Window** in Cursor.
 
+## Install the plugin in Claude Code
+
+This repo also ships Claude packaging:
+
+- `.claude-plugin/marketplace.json` — marketplace catalog (`source: "./"`)
+- `.claude-plugin/plugin.json` — plugin manifest + `userConfig` (with defaults)
+- `.mcp.json` — MCP servers using `${user_config.*}` placeholders
+
+### Add marketplace and install
+
+```bash
+claude plugin marketplace add Muzzamil-Rolustech/rt-redmine-plugin
+claude plugin install rt-redmine-plugin@rt-redmine-marketplace
+```
+
+Or from a local checkout:
+
+```bash
+claude plugin marketplace add /path/to/rt-redmine-plugin
+claude plugin install rt-redmine-plugin@rt-redmine-marketplace
+```
+
+On enable, Claude prompts for `userConfig` (API key required; activity/billable/SSE defaults are pre-filled).
+
+### Local test without marketplace
+
+```bash
+claude --plugin-dir /path/to/rt-redmine-plugin
+```
+
+Validate packaging:
+
+```bash
+claude plugin validate /path/to/rt-redmine-plugin
+```
+
 ## MCP servers in this plugin
 
-Cursor starts these from `mcp.json`:
+- **Cursor** loads `mcp.json` with `${VAR}` placeholders (dashboard **Plugins → Configure**).
+- **Claude Code** loads `.mcp.json` with `${user_config.*}` placeholders (`userConfig` on enable).
 
 ### Redmine agent (`npx`)
 
@@ -162,14 +201,16 @@ Cursor starts these from `mcp.json`:
 npx -y @muzzamil-khan/redmine-agent-mcp
 ```
 
-Plugin variables (set in **Plugins → Configure**; substituted into `mcp.json`):
+Config values (Cursor variables / Claude `userConfig`):
 
-- `REDMINE_BASE_URL`
-- `REDMINE_API_KEY`
-- `REDMINE_ACTIVITY_ID`
-- `REDMINE_BILLABLE_HOURS_FIELD_ID`
-- `REDMINE_SSE_URL`
-- `REDMINE_SSE_API_KEY`
+| Variable | Default | Notes |
+| --- | --- | --- |
+| `REDMINE_BASE_URL` | `https://redmine.rolustech.com` | Override if needed |
+| `REDMINE_API_KEY` | _(none — required)_ | Your personal Redmine API key |
+| `REDMINE_ACTIVITY_ID` | `5` | Default time-entry activity |
+| `REDMINE_BILLABLE_HOURS_FIELD_ID` | `1` | Billable hours custom field |
+| `REDMINE_SSE_URL` | `https://staging5.rolustech.com:44312/sse` | Team SSE gateway |
+| `REDMINE_SSE_API_KEY` | `rt-mcp-redmine` | Gateway `x-api-key` |
 
 ### Google Sheets (`uvx`)
 
@@ -179,10 +220,12 @@ uvx mcp-google-sheets@latest
 
 Always use `@latest` so `uvx` fetches the newest `mcp-google-sheets` release.
 
-Plugin variables (OAuth flow used by this plugin):
+Plugin variables / Claude `userConfig` (OAuth flow used by this plugin):
 
-- `GOOGLE_SHEETS_CREDENTIALS_PATH` — absolute path to your Google OAuth client JSON (`CREDENTIALS_PATH` in the MCP process)
-- `GOOGLE_SHEETS_TOKEN_PATH` — writable path where the OAuth refresh token is cached (`TOKEN_PATH` in the MCP process)
+| Variable | Default | Notes |
+| --- | --- | --- |
+| `GOOGLE_SHEETS_CREDENTIALS_PATH` | `/path/to/client-secret.json` | Absolute path to OAuth client JSON (`CREDENTIALS_PATH`) |
+| `GOOGLE_SHEETS_TOKEN_PATH` | `token.json` | Writable OAuth token cache path (`TOKEN_PATH`) |
 
 See [docs/redmine-ticket-creation-setup.md](docs/redmine-ticket-creation-setup.md) for Google Cloud setup, Redmine API key, sheet sharing, and first-run OAuth steps.
 
@@ -196,6 +239,7 @@ Keep real API keys and credential paths out of Git. The checked-in `mcp.json` us
 
 ## Included skills
 
+- `redmine-plugin-bootstrap`: Routes Redmine/Sheets requests to the correct skill (Claude + shared guidance; Cursor also has `rules/redmine-agent.mdc`).
 - `redmine-operations`: Routes Redmine reads, updates, time logging, config lookup, permissions, and assignee lookup.
 - `redmine-ticket-creation`: Creates a single Redmine issue through MCP intake, preview, and explicit confirmation.
 - `redmine-batch-ticket-creation`: Creates Feature → User Stories → Tasks from Google Sheets or CSV with mapping, preview, confirmation, and sheet write-back.
